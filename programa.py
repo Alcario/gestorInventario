@@ -1,4 +1,3 @@
-# Crear clase persona que obtiene los datos de la tabla Personas de la bd inventario.db
 import datetime
 import os
 import sqlite3
@@ -11,17 +10,11 @@ class Persona:
         self.nombre = nombre
         self.apellidos = apellidos
 
-# Crear clase herramienta que obtiene los datos de la tabla herramientass de la bd inventario.db
-
-
 class Herramienta:
     def __init__(self, id, nombre, cantidad):
         self.id = id
         self.nombre = nombre
         self.cantidad = cantidad
-
-# Crear clase herramientaPrestada que obtiene los datos de la tabla herramientasPrestadas de la bd inventario.db
-
 
 class HerramientasPrestadas:
     def __init__(self, id, id_Prestamo, id_herramienta, id_cantidad):
@@ -30,18 +23,12 @@ class HerramientasPrestadas:
         self.id_herramienta = id_herramienta
         self.cantidad = id_cantidad
 
-# Crear clase prestamo que obtiene los datos de la tabla Prestamos de la bd inventario.db
-
-
 class Prestamo:
     def __init__(self, id, id_persona, devuelto, fecha):
         self.id = id
         self.id_persona = id_persona
         self.devuelto = devuelto
         self.fecha = fecha
-
-# Crear clase herramientasDevueltas que obtiene los datos de la tabla HerramientasDevueltas
-
 
 class HerramientasDevueltas:
     def __init__(self, id, id_herramienta, id_Prestamo, cantidad, fecha):
@@ -51,11 +38,7 @@ class HerramientasDevueltas:
         self.cantidad = cantidad
         self.fecha = fecha
 
-# Clase de conexión a la base de datos en sqlLite
-
-
 class Connection:
-    # Crear variables para la conexión a la base de datos
     conn = None
     cursor = None
 
@@ -63,19 +46,16 @@ class Connection:
         self.conn = sqlite3.connect('inventario.db')
         self.cursor = self.conn.cursor()
 
-    # método para obtener datos de la tabla personas de la base de datos inventario.db
     def get_personas(self):
         self.cursor.execute('SELECT * FROM Personas')
         rows = self.cursor.fetchall()
 
-        # transformar los datos obtenidos en una lista de objetos persona
         personas = []
         for row in rows:
             persona = Persona(row[0], row[1], row[2])
             personas.append(persona)
         return personas
 
-    # método para obtener una persona de la tabla persona por id
     def get_persona(self, id):
         self.cursor.execute(
             'SELECT * FROM Personas WHERE idPersona = ?', (id,))
@@ -83,25 +63,21 @@ class Connection:
         persona = Persona(row[0], row[1], row[2])
         return persona
 
-    # método para ingresar datos en la tabla Personas de la base de datos inventario.db
     def insert_persona(self, persona):
         self.cursor.execute(
             'INSERT INTO Personas (nombre, apellido) VALUES (?, ?)', (persona.nombre, persona.apellidos))
         self.conn.commit()
 
-    # método para obtener los datos de la tabla Herramientas de la base de datos inventario.db
     def get_herramientas(self):
         self.cursor.execute('SELECT * FROM Herramientas')
         rows = self.cursor.fetchall()
 
-        # transformar los datos obtenidos en una lista de objetos herramienta
         herramientas = []
         for row in rows:
             herramienta = Herramienta(row[0], row[1], row[2])
             herramientas.append(herramienta)
         return herramientas
 
-    # método para obtener la herramienta de la tabla herramientas por id
     def get_herramienta(self, id):
         self.cursor.execute(
             'SELECT * FROM Herramientas WHERE idHerramienta = ?', (id,))
@@ -109,7 +85,6 @@ class Connection:
         herramienta = Herramienta(row[0], row[1], row[2])
         return herramienta
 
-    # método para obtener la herramienta de la tabla herramientas por nombre
     def get_herramienta_by_name(self, nombre):
         self.cursor.execute(
             'SELECT * FROM Herramientas WHERE nombre = ?', (nombre))
@@ -117,19 +92,16 @@ class Connection:
         herramienta = Herramienta(row[0], row[1], row[2])
         return herramienta
 
-    # metodo para insertar herramienta en la tabla herramientas de la base de datos
     def insert_herramienta(self, herramienta):
         self.cursor.execute(
             'INSERT INTO Herramientas (nombre, cantidad) VALUES (?, ?)', (herramienta.nombre, herramienta.cantidad))
         self.conn.commit()
 
-    # actualizar cantidad de herramientas en la tabla herramientas
     def update_herramienta(self, id_herramienta, cantidad):
         self.cursor.execute(
             'UPDATE Herramientas SET cantidad = ? WHERE idHerramienta = ?', (cantidad, id_herramienta))
         self.conn.commit()
 
-    # método para listar herramientasPrestadas el atrivuto devuelto debe de ser igual a cero de la bd}
     def get_herramientasPrestadas(self):
         self.cursor.execute(
             'SELECT * FROM HerramientasPrestadas')
@@ -157,13 +129,11 @@ class Connection:
             row[0], row[1], row[2], row[3])
         return herramientaPrestada
 
-    # metodo para insertar herramientaPrestada en la tabla herramientasPrestadas de la base de datos
     def insert_herramientaPrestada(self, id_herramienta, id_prestamo, cantidad):
         self.cursor.execute(
             'INSERT INTO herramientasPrestadas (idHerramienta, idPrestamo, cantidad) VALUES (?, ?, ?)', (id_herramienta, id_prestamo, cantidad))
         self.conn.commit()
 
-    # método para encontrar herramientas prestadas por idPrestamo
     def get_herramientasPrestadas_by_idPrestamo(self, id):
         self.cursor.execute(
             'SELECT * FROM herramientasPrestadas WHERE idPrestamo = ?', (id,))
@@ -175,7 +145,6 @@ class Connection:
             herramientasPrestadas.append(herramientaPrestada)
         return herramientasPrestadas
 
-    # método para listar préstamo de la bd
     def get_prestamos(self):
         self.cursor.execute('SELECT * FROM Prestamos WHERE devuelto = 0')
         rows = self.cursor.fetchall()
@@ -194,7 +163,6 @@ class Connection:
             prestamos.append(prestamo)
         return prestamos
 
-    # método para obtener préstamo mediante id
     def get_prestamo(self, id):
         self.cursor.execute(
             'SELECT * FROM Prestamos WHERE idPrestamo = ?', (id,))
@@ -202,7 +170,6 @@ class Connection:
         prestamo = Prestamo(row[0], row[1], row[2], row[3])
         return prestamo
 
-    # método para insertar prestamo en la tabla Prestamos de la base de datos
     def insert_prestamo(self, prestamo):
         self.cursor.execute(
             'INSERT INTO Prestamos (idPersona, devuelto, fecha) VALUES (?, ?, ?)', (prestamo.id_persona, 0, datetime.datetime.now()))
@@ -213,13 +180,11 @@ class Connection:
             'INSERT INTO Prestamos (idPersona, devuelto, fecha) VALUES (?, ?, ?)', (id_persona, 0, datetime.datetime.now()))
         self.conn.commit()
 
-    # método para actualizar estado préstamo por id
     def update_prestamo(self, id_prestamo):
         self.cursor.execute(
             'UPDATE Prestamos SET devuelto = 1 WHERE idPrestamo = ?', (id_prestamo,))
         self.conn.commit()
 
-    # método para devolver el último préstamo insertado
     def get_ultimoPrestamo(self):
         self.cursor.execute(
             'SELECT * FROM Prestamos ORDER BY idPrestamo DESC LIMIT 1')
@@ -227,13 +192,11 @@ class Connection:
         prestamo = Prestamo(row[0], row[1], row[2], row[3])
         return prestamo
 
-    # método para actualizar la cantidad de herramientas en la tabla herramientas de la bd
     def update_herramienta(self, id_herramienta, cantidad):
         self.cursor.execute(
             'UPDATE Herramientas SET cantidad = ? WHERE idHerramienta = ?', (cantidad, id_herramienta))
         self.conn.commit()
 
-    # método para obtener los datos de la tabla HerramientasDevueltas
     def get_herramientasDevueltas(self):
         self.cursor.execute('SELECT * FROM HerramientasDevueltas')
         rows = self.cursor.fetchall()
@@ -244,7 +207,6 @@ class Connection:
             herramientasDevueltas.append(herramientaDevuelta)
         return herramientasDevueltas
 
-    # método para obtener un dato de la tabla HerramientasDevueltas
     def get_herramientaDevuelta(self, id):
         self.cursor.execute(
             'SELECT * FROM HerramientasDevueltas WHERE idHerramientaDevuelta = ?', (id,))
@@ -253,7 +215,6 @@ class Connection:
             row[0], row[1], row[2], row[3], row[4])
         return herramientaDevuelta
 
-    # devolver herramientas devueltas por idPrestamo
     def get_herramientasDevueltas_by_idPrestamo(self, id):
         self.cursor.execute(
             'SELECT * FROM HerramientasDevueltas WHERE idPrestamo = ?', (id))
@@ -267,14 +228,12 @@ class Connection:
 
         return herramientasDevueltas
 
-    # devolver herramientas devueltas por idPrestamo y idHerramienta
     def get_herramientasDevueltas_by_idPrestamo_idHerramienta(self, idPrestamo, idHerramienta):
         self.cursor.execute(
             'SELECT * FROM HerramientasDevueltas WHERE idPrestamo = ? AND idHerramienta = ?', (idPrestamo, idHerramienta))
         row = self.cursor.fetchone()
 
-        if row is None:  # Si no hay filas en la base de datos
-            # Devuelve un objeto con cantidad en 0
+        if row is None:
             return HerramientasDevueltas(None, None, None, None, 0)
 
         herramientaDevuelta = HerramientasDevueltas(
@@ -282,7 +241,6 @@ class Connection:
 
         return herramientaDevuelta
 
-    # método para insertar datos en la tabla HerramientasDevueltas
     def insert_herramientaDevuelta(self, id_herramienta, id_prestamo, cantidad):
         self.cursor.execute(
             'INSERT INTO HerramientasDevueltas (idHerramienta, idPrestamo, cantidad, fecha) VALUES (?, ?, ?, ?)', (id_herramienta, id_prestamo, cantidad, datetime.datetime.now()))
@@ -348,9 +306,6 @@ def mostrar_prestamos():
     except Exception as e:
         print(e)
 
-# función para listar devoluciones de la tabla HerramientasDevueltas
-
-
 def insertar_persona():
     try:
         os.system("cls")
@@ -364,7 +319,6 @@ def insertar_persona():
     except Exception as e:
         print(e)
 
-
 def insertar_herramienta():
     try:
         os.system("cls")
@@ -377,7 +331,6 @@ def insertar_herramienta():
         print("**********************************\n")
     except Exception as e:
         print(e)
-
 
 def prestar_herramienta():
     try:
@@ -395,7 +348,6 @@ def prestar_herramienta():
 
             id_herramienta = input("\nSeleccione la herramienta: ")
             cantidad = input("Ingresa la cantidad: ")
-            # controlar que la cantidad de herramientas que se prestan sea menor o igual a la cantidad de herramientas que hay, en caso de excederse volver a solicitar el valor
             while True:
                 if int(cantidad) <= int(conn.get_herramienta(id_herramienta).cantidad):
                     break
@@ -422,9 +374,6 @@ def prestar_herramienta():
             print("**********************************\n")
     except Exception as e:
         print(e)
-
-# función para mostrar herramientas ordenadas por id
-
 
 def listar_devoluciones():
     try:
@@ -537,7 +486,6 @@ def devolver_herramienta():
         idPrestamo = input("\nSeleccione el prestamo: ")
 
         herramientas = conn.get_herramientasPrestadas_by_idPrestamo(idPrestamo)
-        # saber la cantidad de herramientas prestadas que hay
         bandera = 1
         for herramienta in herramientas:
             cantidadHerramientasDevueltas = conn.get_herramientasDevueltas_by_idPrestamo_idHerramienta(
@@ -617,10 +565,7 @@ def actualizar_cantidad_herramienta():
     except Exception as e:
         print(e)
 
-
-# implementar try except para traer los datos de la tabla Personas de la base de datos
 try:
-    # se crea una instancia de la clase Connection
     conn = Connection()
 
     while True:
@@ -640,10 +585,8 @@ try:
         print("--------------------------------------------------")
         op = input("Opción: ")
 
-        # por medio de un switch case se selecciona la opción deseada
         match op:
             case "1":
-                # por medio de un try except se traen los datos de la tabla Personas de la base de datos
                 mostrar_personas()
                 input()
                 continue
